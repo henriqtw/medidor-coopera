@@ -1,12 +1,11 @@
 // public/app.js
 
-// Seleção dos elementos do status no cabeçalho
 const statusServerText = document.querySelector('#status-server');
 const statusDot = document.querySelector('#status-dot');
 
 async function verificarStatusServidor() {
   try {
-    // Faz uma requisição de teste para o backend
+    // requisição de teste para o backend
     const resposta = await fetch('/api/simular', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -25,7 +24,7 @@ async function verificarStatusServidor() {
     // Se a requisição falhar (sem resposta de rede), o servidor está OFFLINE
     if (statusServerText) statusServerText.textContent = 'Servidor Offline';
     if (statusDot) {
-      statusDot.style.backgroundColor = '#d32f2f'; // Vermelho
+      statusDot.style.backgroundColor = '#d32f2f'; 
       statusDot.style.boxShadow = '0 0 8px #d32f2f';
     }
   }
