@@ -1,7 +1,7 @@
 //contato com o servidor para estabelecer valores e facilitar mudanças no futuro
 
 module.exports = {
-  PORT: process.env.PORT || 3000,
+  PORT: process.env.PORT || 5000,
 
   TARIFAS: {
     BANDEIRA_VERDE: 0.75,
