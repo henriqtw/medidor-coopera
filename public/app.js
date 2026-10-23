@@ -1,7 +1,7 @@
 // status do servidor
 
-const statusServerText = document.querySelector('#status-server');
-const statusDot = document.querySelector('#status-dot');
+const statusServerText = document.querySelector('.status-server');
+const statusDot = document.querySelector('.status-dot');
 
 async function verificarStatusServidor() {
   try {
@@ -14,9 +14,9 @@ async function verificarStatusServidor() {
 
     // se o servidor respondeu (mesmo com status 400 por lista vazia), ele está ONLINE
     if (resposta.status === 400 || resposta.ok) {
-      if (statusServerText) statusServerText.textContent = 'Servidor Online';
+      if (statusServerText) statusServerText.textContent = 'Servidor Online (Node/Express)';
       if (statusDot) {
-        statusDot.style.backgroundColor = '#2e7d32'; // Verde
+        statusDot.style.backgroundColor = '#2e7d32';
         statusDot.style.boxShadow = '0 0 8px #2e7d32';
       }
     }
@@ -38,19 +38,19 @@ verificarStatusServidor();
 let listaAparelhos = [];
 
 const formAparelho = document.getElementById('form-aparelho');
-const tabelaAparelhos = document.getElementById('tabela-aparelhos');
+const tabelaAparelhos = document.getElementById('lista-aparelhos');
 const btnSimular = document.getElementById('btn-simular');
 const divResultado = document.getElementById('resultado');
 
 //salvar aparelho local
 
 formAparelho.addEventListener('submit', (event) => {
-event.preventDefault();
+  event.preventDefault();
 
-const nome = document.getElementById('nome').value;
-  const potenciaW = parseFloat(document.getElementById('potencia').value);
-  const horasDia = parseFloat(document.getElementById('horas').value);
-  const diasMes = parseFloat(document.getElementById('dias').value);
+  const nome = document.getElementById('input-nome').value;
+  const potenciaW = parseFloat(document.getElementById('input-potencia').value);
+  const horasDia = parseFloat(document.getElementById('input-horas').value);
+  const diasMes = parseFloat(document.getElementById('input-dias').value);
 
   // cria o objeto do aparelho e adiciona ao array
   const aparelho = { nome, potenciaW, horasDia, diasMes };
@@ -58,11 +58,23 @@ const nome = document.getElementById('nome').value;
 
   // limpa o formulário e atualiza a tabela no HTML
   formAparelho.reset();
+  document.getElementById('input-dias').value = 30;
   atualizarTabela();
 });
 
 function atualizarTabela(){
   tabelaAparelhos.innerHTML = '';
+
+  const estadoVazio = document.getElementById('estado-vazio');
+  const contadorAparelhos = document.getElementById('contador-aparelhos');
+
+  if (estadoVazio) {
+    estadoVazio.style.display = listaAparelhos.length === 0 ? 'block' : 'none';
+  }
+
+  if (contadorAparelhos) {
+    contadorAparelhos.innerText = `${listaAparelhos.length} itens`;
+  }
 
   listaAparelhos.forEach((item, index) => {
     const linha = document.createElement('tr');
@@ -71,13 +83,12 @@ function atualizarTabela(){
       <td>${item.potenciaW} W</td>
       <td>${item.horasDia} h/dia</td>
       <td>${item.diasMes} dias</td>
-      <td>
-        <button onclick="removerAparelho(${index})">❌</button>
+      <td style="text-align: right;">
+        <button type="button" class="btn" style="padding: 0.2rem 0.5rem; background: #ef4444; color: white;" onclick="removerAparelho(${index})">❌</button>
       </td>
     `;
     tabelaAparelhos.appendChild(linha);
-
-  })
+  });
 }
 
 //remover aparelho
@@ -120,11 +131,22 @@ btnSimular.addEventListener('click', async () => {
 
 // função para exibir os resultados processados
 function exibirResultado(dados) {
-  divResultado.innerHTML = `
-    <h2>Resultado da Simulação</h2>
-    <p><strong>Consumo Total:</strong> ${dados.consumoTotalKWh.toFixed(2)} kWh/mês</p>
-    <p><strong>Custo Estimado (Bandeira Verde):</strong> R$ ${dados.custoBandeiraVerde.toFixed(2)}</p>
-    <p><strong>Aparelho de Maior Consumo:</strong> ${dados.aparelhoMaiorConsumo ? dados.aparelhoMaiorConsumo.nome : 'N/A'}</p>
-    <p><strong>Painéis Solares Necessários:</strong> ${dados.paineisEstimados} painel(éis)</p>
-  `;
+  const placeholder = document.getElementById('placeholder-resultado');
+  if (placeholder) placeholder.style.display = 'none';
+
+  const resConsumo = document.getElementById('res-consumo');
+  const resCusto = document.getElementById('res-custo');
+  const resTotal = document.getElementById('res-total');
+  const resPaineis = document.getElementById('res-paineis');
+  const resMaisCaro = document.getElementById('res-mais-caro');
+
+  if (resConsumo) resConsumo.innerText = `${dados.consumoTotalKWh.toFixed(2)} kWh`;
+  if (resCusto) resCusto.innerText = `R$ ${dados.custoBandeiraVerde.toFixed(2)}`;
+  if (resTotal) resTotal.innerText = `R$ ${dados.custoBandeiraVerde.toFixed(2)}`;
+  if (resPaineis) resPaineis.innerText = `${dados.paineisEstimados} Painéis`;
+  if (resMaisCaro) {
+    resMaisCaro.innerText = dados.aparelhoMaiorConsumo ? `${dados.aparelhoMaiorConsumo.nome} (${dados.aparelhoMaiorConsumo.potenciaW}W)` : '-';
+  }
+
+  divResultado.style.display = 'block';
 }
