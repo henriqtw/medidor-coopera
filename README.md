@@ -1,5 +1,7 @@
 # Medidor Coopera - Calculadora de Consumo & Dimensionamento Solar
 
+<!-- Código MC-25-0ZYW --->
+
 > Aplicação web desenvolvida em Node.js e Express para simulação de consumo elétrico residencial, estimativa de custos com tarifas/bandeiras tarifárias e dimensionamento de painéis fotovoltaicos.
 
 [![Acessar Aplicação](https://img.shields.io/badge/🚀_Acessar_Aplicação_Online-Render-orange?style=for-the-badge)](https://medidor-coopera.onrender.com/)
