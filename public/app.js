@@ -1,18 +1,15 @@
-// status do servidor
-
+// Status do servidor
 const statusServerText = document.querySelector('.status-server');
 const statusDot = document.querySelector('.status-dot');
 
 async function verificarStatusServidor() {
   try {
-    // requisição de teste para o backend
     const resposta = await fetch('/api/simular', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ aparelhos: [] })
     });
 
-    // se o servidor respondeu (mesmo com status 400 por lista vazia), ele está ONLINE
     if (resposta.status === 400 || resposta.ok) {
       if (statusServerText) statusServerText.textContent = 'Servidor Online (Node/Express)';
       if (statusDot) {
@@ -21,7 +18,6 @@ async function verificarStatusServidor() {
       }
     }
   } catch (erro) {
-    // se a requisição falhar (sem resposta de rede), o servidor está OFFLINE
     if (statusServerText) statusServerText.textContent = 'Servidor Offline';
     if (statusDot) {
       statusDot.style.backgroundColor = '#d32f2f'; 
@@ -30,11 +26,9 @@ async function verificarStatusServidor() {
   }
 }
 
-// executa a checagem assim que a página é carregada
 verificarStatusServidor();
 
-//lista de aparelhos e contato com dom
-
+// Lista de aparelhos e manipulação do DOM
 let listaAparelhos = [];
 
 const formAparelho = document.getElementById('form-aparelho');
@@ -42,27 +36,23 @@ const tabelaAparelhos = document.getElementById('lista-aparelhos');
 const btnSimular = document.getElementById('btn-simular');
 const divResultado = document.getElementById('resultado');
 
-//salvar aparelho local
-
 formAparelho.addEventListener('submit', (event) => {
   event.preventDefault();
 
   const nome = document.getElementById('input-nome').value;
-  const potenciaW = parseFloat(document.getElementById('input-potencia').value);
-  const horasDia = parseFloat(document.getElementById('input-horas').value);
-  const diasMes = parseFloat(document.getElementById('input-dias').value);
+  const potenciaW = parseFloat(document.getElementById('input-potencia').value) || 0;
+  const horasDia = parseFloat(document.getElementById('input-horas').value) || 0;
+  const diasMes = parseFloat(document.getElementById('input-dias').value) || 0;
 
-  // cria o objeto do aparelho e adiciona ao array
   const aparelho = { nome, potenciaW, horasDia, diasMes };
   listaAparelhos.push(aparelho);
 
-  // limpa o formulário e atualiza a tabela no HTML
   formAparelho.reset();
   document.getElementById('input-dias').value = 30;
   atualizarTabela();
 });
 
-function atualizarTabela(){
+function atualizarTabela() {
   tabelaAparelhos.innerHTML = '';
 
   const estadoVazio = document.getElementById('estado-vazio');
@@ -91,13 +81,10 @@ function atualizarTabela(){
   });
 }
 
-//remover aparelho
-function removerAparelho (index){
+function removerAparelho(index) {
   listaAparelhos.splice(index, 1);
   atualizarTabela();
 }
-
-//evento para adicionar a lista ao servidor e calcular
 
 btnSimular.addEventListener('click', async () => {
   if (listaAparelhos.length === 0) {
@@ -108,9 +95,7 @@ btnSimular.addEventListener('click', async () => {
   try {
     const resposta = await fetch('/api/simular', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ aparelhos: listaAparelhos })
     });
 
@@ -121,7 +106,6 @@ btnSimular.addEventListener('click', async () => {
       return;
     }
 
-    // renderiza o resultado recebido da API no HTML
     exibirResultado(dados);
   } catch (erro) {
     console.error('Erro na requisição:', erro);
@@ -129,24 +113,35 @@ btnSimular.addEventListener('click', async () => {
   }
 });
 
-// função para exibir os resultados processados
+// Função para exibir os resultados processados sem quebras de referência
 function exibirResultado(dados) {
   const placeholder = document.getElementById('placeholder-resultado');
   if (placeholder) placeholder.style.display = 'none';
 
   const resConsumo = document.getElementById('res-consumo');
   const resCusto = document.getElementById('res-custo');
+  const resBandeira = document.getElementById('res-bandeira'); // Mapeado corretamente!
   const resTotal = document.getElementById('res-total');
   const resPaineis = document.getElementById('res-paineis');
   const resMaisCaro = document.getElementById('res-mais-caro');
 
-  if (resConsumo) resConsumo.innerText = `${dados.consumoTotalKWh.toFixed(2)} kWh`;
-  if (resCusto) resCusto.innerText = `R$ ${dados.custoBandeiraVerde.toFixed(2)}`;
-  if (resTotal) resTotal.innerText = `R$ ${dados.custoBandeiraVerde.toFixed(2)}`;
-  if (resPaineis) resPaineis.innerText = `${dados.paineisEstimados} Painéis`;
+  const consumo = (dados && Number(dados.consumoTotalKWh)) || 0;
+  const custoBase = (dados && Number(dados.custoBandeiraVerde)) || 0;
+  const custoAdicional = (dados && Number(dados.custoAdicionalBandeira)) || 0;
+  const custoTotal = (dados && Number(dados.custoTotal)) || 0;
+  const paineis = (dados && Number(dados.paineisEstimados)) || 0;
+
+  if (resConsumo) resConsumo.innerText = `${consumo.toFixed(2)} kWh`;
+  if (resCusto) resCusto.innerText = `R$ ${custoBase.toFixed(2)}`;
+  if (resBandeira) resBandeira.innerText = `R$ ${custoAdicional.toFixed(2)}`;
+  if (resTotal) resTotal.innerText = `R$ ${custoTotal.toFixed(2)}`;
+  if (resPaineis) resPaineis.innerText = `${paineis} Painéis`;
+
   if (resMaisCaro) {
-    resMaisCaro.innerText = dados.aparelhoMaiorConsumo ? `${dados.aparelhoMaiorConsumo.nome} (${dados.aparelhoMaiorConsumo.potenciaW}W)` : '-';
+    resMaisCaro.innerText = (dados && dados.aparelhoMaiorConsumo) 
+      ? `${dados.aparelhoMaiorConsumo.nome} (${dados.aparelhoMaiorConsumo.potenciaW}W)` 
+      : '-';
   }
 
-  divResultado.style.display = 'block';
+  if (divResultado) divResultado.style.display = 'block';
 }

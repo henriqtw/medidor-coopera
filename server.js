@@ -19,7 +19,7 @@ app.post('/api/simular', (req, res) => {
     return res.status(400).json({ erro: 'Envie ao menos um aparelho na lista.' });
   }
 
-  const resultado = simular(aparelhos);
+  const resultado = simular(aparelhos, 'BANDEIRA_AMARELA');
 
   return res.json(resultado);
 });
