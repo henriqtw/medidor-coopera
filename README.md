@@ -9,10 +9,8 @@
 ## 📸 Demonstração do Projeto
 
 <div align="center">
-  <img src="https://medidor-coopera.onrender.com/screenshot.png" alt="Interface do Medidor Coopera" width="800px" style="border-radius: 8px;">
+  <img src="public/screenshot.png" alt="Interface do Medidor Coopera" width="800px" style="border-radius: 8px;">
 </div>
-
-*(Nota: Para a imagem aparecer corretamente no repositório, faça um print da tela do seu site, nomeie o arquivo como `screenshot.png` e salve dentro da pasta `public/` do seu projeto antes de dar o push no Git).*
 
 ---
 
