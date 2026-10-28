@@ -1,4 +1,4 @@
-// Status do servidor
+// checagem de status do servidor
 const statusServerText = document.querySelector('.status-server');
 const statusDot = document.querySelector('.status-dot');
 
@@ -28,7 +28,7 @@ async function verificarStatusServidor() {
 
 verificarStatusServidor();
 
-// Lista de aparelhos e manipulação do DOM
+// gestão de formulário e DOM
 let listaAparelhos = [];
 
 const formAparelho = document.getElementById('form-aparelho');
@@ -113,14 +113,14 @@ btnSimular.addEventListener('click', async () => {
   }
 });
 
-// Função para exibir os resultados processados sem quebras de referência
+// exibição dos resultados e preenchimento da tabela de detalhamento
 function exibirResultado(dados) {
   const placeholder = document.getElementById('placeholder-resultado');
   if (placeholder) placeholder.style.display = 'none';
 
   const resConsumo = document.getElementById('res-consumo');
   const resCusto = document.getElementById('res-custo');
-  const resBandeira = document.getElementById('res-bandeira'); // Mapeado corretamente!
+  const resBandeira = document.getElementById('res-bandeira');
   const resTotal = document.getElementById('res-total');
   const resPaineis = document.getElementById('res-paineis');
   const resMaisCaro = document.getElementById('res-mais-caro');
@@ -141,6 +141,26 @@ function exibirResultado(dados) {
     resMaisCaro.innerText = (dados && dados.aparelhoMaiorConsumo) 
       ? `${dados.aparelhoMaiorConsumo.nome} (${dados.aparelhoMaiorConsumo.potenciaW}W)` 
       : '-';
+  }
+
+  // tabela de detalhamento abaixo dos resultados
+  const tabelaDetalhamento = document.getElementById('tabela-detalhamento');
+  
+  if (tabelaDetalhamento) {
+    tabelaDetalhamento.innerHTML = '';
+
+    if (dados.detalhamento && dados.detalhamento.length > 0) {
+      dados.detalhamento.forEach(item => {
+        const linha = document.createElement('tr');
+        linha.innerHTML = `
+          <td><strong>${item.nome}</strong></td>
+          <td>${item.kwhMes.toFixed(2)} kWh</td>
+          <td>R$ ${item.custoEstimado.toFixed(2)}</td>
+          <td>${item.porcentagemTotal.toFixed(1)}%</td>
+        `;
+        tabelaDetalhamento.appendChild(linha);
+      });
+    }
   }
 
   if (divResultado) divResultado.style.display = 'block';

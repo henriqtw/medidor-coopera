@@ -1,6 +1,6 @@
 const config = require('./config');
 
-// Calculo do consumo mensal individual de um aparelho em kWh
+// calculo do consumo mensal individual de um aparelho em kWh
 function consumoMensalKwh(aparelho) {
   const potencia = Number(aparelho.potenciaW) || 0;
   const horas = Number(aparelho.horasDia) || 0;
@@ -9,7 +9,7 @@ function consumoMensalKwh(aparelho) {
   return (potencia * horas * dias) / 1000;
 }
 
-// Calculo do custo de energia com base na tarifa base e bandeira
+// calculo do custo de energia com base na tarifa base e bandeira
 function custoEnergia(consumoKWh, bandeira = 'BANDEIRA_AMARELA') {
   const tarifaBase = config.TARIFAS.TE_TUDS_BASE || 0.82;
   const adicionalBandeira = config.TARIFAS[bandeira] || 0.01885;
@@ -19,7 +19,7 @@ function custoEnergia(consumoKWh, bandeira = 'BANDEIRA_AMARELA') {
   return consumoKWh * tarifaFinal;
 }
 
-// Calculo do número de painéis solares necessários
+// calculo do número de painéis solares necessários
 function paineisNecessarios(consumoTotalKWh) {
   if (!consumoTotalKWh || consumoTotalKWh <= 0) return 0;
 
@@ -27,19 +27,26 @@ function paineisNecessarios(consumoTotalKWh) {
   const hsp = config.PAINEL_SOLAR.HORAS_SOL_DIARIO || 4.5;
   const eficiencia = config.PAINEL_SOLAR.EFICIENCIA || 0.80;
 
-  // Geração mensal estimada de 1 painel (kWh/mês)
+  // geração mensal estimada de 1 painel (kWh/mês)
   const geracaoPorPainel = (potenciaPainel * hsp * 30 * eficiencia) / 1000;
 
   return Math.ceil(consumoTotalKWh / geracaoPorPainel);
 }
 
-// Função principal de simulação
+// função principal de simulação
 function simular(aparelhos, bandeira = 'BANDEIRA_AMARELA') {
   let consumoTotalKWh = 0;
   let aparelhoMaiorConsumo = null;
   let maiorConsumoItem = 0;
 
+  const tarifaBase = config.TARIFAS.TE_TUDS_BASE || 0.82;
+  const adicionalBandeira = config.TARIFAS[bandeira] || 0.01885;
+  const tarifaFinal = tarifaBase + adicionalBandeira;
+
+  const aparelhosDetalhados = [];
+
   if (Array.isArray(aparelhos)) {
+    // calcula o consumo individual e o total acumulado
     aparelhos.forEach(aparelho => {
       const kwhAparelho = consumoMensalKwh(aparelho);
       consumoTotalKWh += kwhAparelho;
@@ -48,11 +55,23 @@ function simular(aparelhos, bandeira = 'BANDEIRA_AMARELA') {
         maiorConsumoItem = kwhAparelho;
         aparelhoMaiorConsumo = aparelho;
       }
+
+      aparelhosDetalhados.push({
+        nome: aparelho.nome,
+        potenciaW: aparelho.potenciaW,
+        kwhMes: kwhAparelho,
+        custoEstimado: kwhAparelho * tarifaFinal,
+        porcentagemTotal: 0
+      });
+    });
+
+    // calcula o percentual individual sobre o total consumido
+    aparelhosDetalhados.forEach(item => {
+      item.porcentagemTotal = consumoTotalKWh > 0 
+        ? (item.kwhMes / consumoTotalKWh) * 100 
+        : 0;
     });
   }
-
-  const tarifaBase = config.TARIFAS.TE_TUDS_BASE || 0.82;
-  const adicionalBandeira = config.TARIFAS[bandeira] || 0.01885;
 
   const custoBase = consumoTotalKWh * tarifaBase;
   const custoAdicionalBandeira = consumoTotalKWh * adicionalBandeira;
@@ -62,11 +81,12 @@ function simular(aparelhos, bandeira = 'BANDEIRA_AMARELA') {
 
   return {
     consumoTotalKWh: consumoTotalKWh || 0,
-    custoBandeiraVerde: custoBase || 0,           // Custo base de energia
-    custoAdicionalBandeira: custoAdicionalBandeira || 0, // Adicional da bandeira
-    custoTotal: totalConta || 0,                   // Total final da conta
+    custoBandeiraVerde: custoBase || 0,
+    custoAdicionalBandeira: custoAdicionalBandeira || 0,
+    custoTotal: totalConta || 0,
     aparelhoMaiorConsumo,
-    paineisEstimados: totalPaineis || 0
+    paineisEstimados: totalPaineis || 0,
+    detalhamento: aparelhosDetalhados
   };
 }
 
