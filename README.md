@@ -1,4 +1,4 @@
-# ⚡ Medidor Coopera - Calculadora de Consumo & Dimensionamento Solar
+# Medidor Coopera - Calculadora de Consumo & Dimensionamento Solar
 
 > Aplicação web desenvolvida em Node.js e Express para simulação de consumo elétrico residencial, estimativa de custos com tarifas/bandeiras tarifárias e dimensionamento de painéis fotovoltaicos.
 
@@ -16,18 +16,18 @@
 
 ---
 
-## 🎯 Funcionalidades
+##  Funcionalidades
 
-- 🔌 **Cadastro Dinâmico de Aparelhos:** Adição de eletrodomésticos informando potência (W), horas de uso diário e dias no mês.
-- 💡 **Cálculo de Consumo Mensal:** Conversão automática dos dados de uso individual e total para kWh/mês.
-- ⚡ **Aplicação de Tarifas & Bandeiras:** Cálculo de custo financeiro considerando a tarifa base regional (ex: R$ 0,82/kWh) e o adicional proporcional das bandeiras tarifárias da ANEEL (Bandeira Amarela, Vermelha, etc.).
-- ☀️ **Dimensionamento Fotovoltaico:** Estimativa exata da quantidade de painéis solares necessários para suprir 100% da demanda energética com base na média de HSP (Horas de Sol Pleno) e eficiência do sistema.
-- 📊 **Detalhamento Individual:** Tabela comparativa destacando o consumo em kWh, o impacto em Reais e a porcentagem (%) de cada aparelho no custo total da conta de luz.
-- 🚨 **Aparelho de Maior Impacto:** Destaque automático do eletrodoméstico que mais consome no imóvel.
+-  **Cadastro Dinâmico de Aparelhos:** Adição de eletrodomésticos informando potência (W), horas de uso diário e dias no mês.
+-  **Cálculo de Consumo Mensal:** Conversão automática dos dados de uso individual e total para kWh/mês.
+-  **Aplicação de Tarifas & Bandeiras:** Cálculo de custo financeiro considerando a tarifa base regional (ex: R$ 0,82/kWh) e o adicional proporcional das bandeiras tarifárias da ANEEL (Bandeira Amarela, Vermelha, etc.).
+-  **Dimensionamento Fotovoltaico:** Estimativa exata da quantidade de painéis solares necessários para suprir 100% da demanda energética com base na média de HSP (Horas de Sol Pleno) e eficiência do sistema.
+-  **Detalhamento Individual:** Tabela comparativa destacando o consumo em kWh, o impacto em Reais e a porcentagem (%) de cada aparelho no custo total da conta de luz.
+-  **Aparelho de Maior Impacto:** Destaque automático do eletrodoméstico que mais consome no imóvel.
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+##  Tecnologias Utilizadas
 
 ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
 ![Express.js](https://img.shields.io/badge/express.js-%23000000.svg?style=for-the-badge&logo=express&logoColor=white)
@@ -38,7 +38,7 @@
 
 ---
 
-## 🧮 Fórmulas Utilizadas
+##  Fórmulas Utilizadas
 
 ### 1. Consumo Individual (kWh)
 $$\text{kWh/mês} = \frac{\text{Potência (W)} \times \text{Horas/dia} \times \text{Dias/mês}}{1000}$$
@@ -51,7 +51,7 @@ $$\text{Painéis} = \left\lceil \frac{\text{Consumo Total (kWh)}}{\text{Geraçã
 
 ---
 
-## 🚀 Como Executar o Projeto Localmente
+##  Como Executar o Projeto Localmente
 
 ### Pré-requisitos
 - [Node.js](https://nodejs.org/) instalado na máquina.
